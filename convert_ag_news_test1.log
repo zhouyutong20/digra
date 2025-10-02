@@ -1,0 +1,17 @@
+nohup: ignoring input
+=== AG_NEWS Dataset Converter for DIGRA ===
+
+Reading base vectors: /home/ytzhou/faiss/build/Datasets/ag_news/ag_news_base.fvecs
+Reading labels: /home/ytzhou/faiss/build/Datasets/ag_news/ag_news_labels.fvecs
+Found 120000 vector-label pairs
+Vector dimension: 384
+Label dimension: 1
+Writing data to: /home/ytzhou/faiss/build/Datasets/ag_news/ag_news.data
+Conversion completed! Converted 120000 records
+
+==================================================
+
+
+=== Conversion Completed ===
+Generated files:
+- Base data: /home/ytzhou/faiss/build/Datasets/ag_news/ag_news.data

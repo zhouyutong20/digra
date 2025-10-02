@@ -1,0 +1,17 @@
+nohup: ignoring input
+=== MSONG Dataset Converter for DIGRA ===
+
+Reading base vectors: /home/ytzhou/faiss/build/Datasets/msong/msong_base.fvecs
+Reading labels: /home/ytzhou/faiss/build/Datasets/msong/msong_labels.fvecs
+Found 985185 vector-label pairs
+Vector dimension: 420
+Label dimension: 1
+Writing data to: /home/ytzhou/faiss/build/Datasets/msong/msong.data
+Conversion completed! Converted 985185 records
+
+==================================================
+
+
+=== Conversion Completed ===
+Generated files:
+- Base data: /home/ytzhou/faiss/build/Datasets/msong/msong.data

@@ -1,0 +1,3 @@
+/home/ytzhou/DIGRA/CMakeFiles/Digra.dir
+/home/ytzhou/DIGRA/CMakeFiles/edit_cache.dir
+/home/ytzhou/DIGRA/CMakeFiles/rebuild_cache.dir
