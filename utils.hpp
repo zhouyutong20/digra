@@ -4,6 +4,24 @@
 #include <iostream>
 #include <fstream>
 
+inline
+void read_fvecs(const std::string& filename, float* data, size_t num, size_t dim) {
+    std::ifstream in(filename, std::ios::binary);
+    if (!in) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        std::exit(1);
+    }
+    for (size_t i = 0; i < num; ++i) {
+        int d = 0;
+        in.read(reinterpret_cast<char*>(&d), sizeof(int));
+        if (d != static_cast<int>(dim)) {
+            // std::cerr << "Dimension mismatch! expected: d" << d << "get: " << dim << "for: " << filename << std::endl;
+            d = dim;
+        }
+        in.read(reinterpret_cast<char*>(data + i * dim), sizeof(float) * dim);
+    }
+}
+
 void load_data(const char* filename, float*& data, int num, int dim) {
     std::ifstream in(filename, std::ios::binary);
     if (!in.is_open()) {

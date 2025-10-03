@@ -1,0 +1,17 @@
+nohup: ignoring input
+=== AMAZON Dataset Converter for DIGRA ===
+
+Reading base vectors: /home/ytzhou/faiss/build/Datasets/amazon/amazon_base.fvecs
+Reading labels: /home/ytzhou/faiss/build/Datasets/amazon/amazon_labels.fvecs
+Found 1000000 vector-label pairs
+Vector dimension: 384
+Label dimension: 5
+Writing data to: /home/ytzhou/faiss/build/Datasets/amazon/amazon.data
+Conversion completed! Converted 1000000 records
+
+==================================================
+
+
+=== Conversion Completed ===
+Generated files:
+- Base data: /home/ytzhou/faiss/build/Datasets/amazon/amazon.data

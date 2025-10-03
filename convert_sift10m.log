@@ -1,0 +1,17 @@
+nohup: ignoring input
+=== SIFT10M Dataset Converter for DIGRA ===
+
+Reading base vectors: /home/ytzhou/faiss/build/Datasets/sift10m/sift10m_base.fvecs
+Reading labels: /home/ytzhou/faiss/build/Datasets/sift10m/sift10m_labels.fvecs
+Found 1000000 vector-label pairs
+Vector dimension: 128
+Label dimension: 6
+Writing data to: /home/ytzhou/faiss/build/Datasets/sift10m/sift10m.data
+Conversion completed! Converted 1000000 records
+
+==================================================
+
+
+=== Conversion Completed ===
+Generated files:
+- Base data: /home/ytzhou/faiss/build/Datasets/sift10m/sift10m.data

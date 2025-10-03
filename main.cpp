@@ -24,29 +24,11 @@ int stringTonum(char *ch){
     return res;
 }
 
-inline
-void read_fvecs(const std::string& filename, float* data, size_t num, size_t dim) {
-    std::ifstream in(filename, std::ios::binary);
-    if (!in) {
-        std::cerr << "Failed to open file: " << filename << std::endl;
-        std::exit(1);
-    }
-    for (size_t i = 0; i < num; ++i) {
-        int d = 0;
-        in.read(reinterpret_cast<char*>(&d), sizeof(int));
-        if (d != static_cast<int>(dim)) {
-            // std::cerr << "Dimension mismatch! expected: d" << d << "get: " << dim << "for: " << filename << std::endl;
-            d = dim;
-        }
-        in.read(reinterpret_cast<char*>(data + i * dim), sizeof(float) * dim);
-    }
-}
-
 bool filter(idx_t id, float* value, float* filter, int vDim, int queryId) {
     float* label = &value[vDim * id];
 
     for (int j = 0; j < vDim; j++) {
-        if (label[j] < filter[2 * vDim * queryId + j] || label[j] > filter[2 * vDim * queryId + j + 1])
+        if (label[j] < filter[2 * vDim * queryId + 2 * j] || label[j] > filter[2 * vDim * queryId + 2 * j + 1])
             return false;
     }
 
@@ -93,25 +75,12 @@ int main(int argc, char** argv){
         float time = 0;
         for(int i = 0 ; i < queryNum; i++){
             auto ans = dataMaker.getGt(i);
-                
-            // filter L, R
-            float rangeL = filters[vDim * i], rangeR = filters[vDim * i + 1];
+            float rangeL = filters[2 * vDim * i], rangeR = filters[2 * vDim * i + 1];
             auto start = std::chrono::high_resolution_clock::now();
-	    // Modified
-            // auto result = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, k, ef);
             auto neighbors = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, new_k, ef);
-	    std::vector<idx_t> result;
-            // Modified post filter
-	    /*
-	    for (auto neighbor : neighbors) {
-                if (filter(neighbor, dataMaker.value, filter, vDim, i)) {
-                    res.push_back(neighbor);
-                    if (result.size() >= k)
-                    break;
-                }
-            }
-	    */
-	    while (!neighbors.empty()) {
+	        std::vector<idx_t> result;
+            
+            while (!neighbors.empty()) {
                 idx_t neighbor = neighbors.top().second;
                 neighbors.pop();
 
@@ -125,11 +94,9 @@ int main(int argc, char** argv){
             auto end = std::chrono::high_resolution_clock::now();
             
             std::vector<int>r1, r2;
-            while(!result.empty()){
-		// Modified
-                // r1.push_back(result.top().second);
-                // result.pop();
-		r1 = std::vector<int>(result.begin(), result.end());
+            while (!result.empty())
+            {
+                r1 = std::vector<int>(result.begin(), result.end());
             }
             for(int j = 0; j < k; j++) r2.push_back(ans[j].second);
             for(auto i1:r1)

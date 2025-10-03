@@ -1,0 +1,282 @@
+diff --git a/DataMaker.hpp b/DataMaker.hpp
+index ea53e83..83e9b45 100644
+--- a/DataMaker.hpp
++++ b/DataMaker.hpp
+@@ -11,137 +11,80 @@ public:
+     float *data;
+     float *query;
+     int *key;
+-    // Modified
+-    // int *value;
+     int *valueList;
+     float *value;
+     // float *valueList;
+     int baseNum, queryNum;
+     int dim;
+-    // Add
+     int valueDim;
+     std::vector<std::vector<std::pair<float,int> > > ans;
+     std::vector<std::pair<int,int> > qRange;
+-    // Modified
+-    // DataMaker(const char* baseFile, const char* queryFile, const char* dataFile, int N, int M, int d){
+-    DataMaker(const char* baseFile, const char* queryFile, const char* dataFile, int N, int M, int d, int vDim){
++    DataMaker(const char* baseFile, const char* queryFile, const char* dataFile, int N, int M, int d, int vDim)
++    {
+         baseNum = N;
+-	queryNum = M;
++	    queryNum = M;
+         dim = d;
+-	// Add
+-	valueDim = vDim;
++	    // Add
++    	valueDim = vDim;
+         load_data(baseFile, data, N, dim);
+         load_data(queryFile, query, M, dim);
+ 
+-        std::ifstream file(dataFile);
+         key = new int[N];
+-	// Modified
++	    // Modified
+         // value = new int[N];
+         valueList = new int[N];
+-	value = new float[N * valueDim];
+-	// valueList = new float[N * valueDim];
++	    value = new float[N * valueDim];
++	    // valueList = new float[N * valueDim];
+ 
+         qRange.resize(M);
+         ans.resize(M);
+-	// Modified
+-	/*
+-        for(int i = 0; i < N; i++){
+-            int tmp;
+-            file>>key[i]>>tmp;
+-            value[i] = tmp;
+-            valueList[i] = value[i];
+-        }
+-	*/
+-	for(int i = 0; i < N; i++){
+-            int tmpKey;
+-            file >> tmpKey;
+-            key[i] = tmpKey;
+-
+-            for (int j = 0; j < valueDim; j++) {
+-                float val;
+-                file >> val;
+-                value[i * valueDim + j] = val;
+-                // valueList[i * valueDim + j] = val;
+-            }
+-	    valueList[i] = value[i * valueDim];
+-        }
+-        // std::sort(valueList, valueList + N);
+-    }
+-    
+-    /*
+-    DataMaker(const char* baseFile, const char* queryFile, int N, int M, int d){
+-        baseNum = N;
+-        queryNum = M;
+-        dim = d;
+-        load_data(baseFile, data, N, dim);
+-        load_data(queryFile, query, M, dim);
+ 
+-        key = new int[N];
+-        value = new int[N];
+-        valueList = new int[N];
+-
+-        qRange.resize(M);
+-        ans.resize(M);
+-        
++        read_fvecs(dataFile, value, N, vDim);
+         for(int i = 0; i < N; i++){
+-            valueList[i] = value[i] = key[i] = i;
++            int tmpKey;
++            key[i] = i;
++            valueList[i] = (int)value[i * valueDim];
+         }
+-
+-        std::random_device rd;
+-        std::mt19937 g(rd());
+     }
+-    */
+-
+-    void genRange(const float* filter, int k){
+-
+-        /*
+-        std::random_device rd;
+-        std::mt19937 rng(rd());
+-        int r = baseNum * range;
+-        std::uniform_int_distribution<int> ud(0, baseNum - r - 1);
+-        for(int i = 0; i< queryNum; i++){
+-            int L = ud(rng);
+-            int R = L + r;
+-            qRange[i] = {valueList[L],valueList[R]};
+-            ans[i] = getTopK(i, qRange[i].first, qRange[i].second, k);
+-        }
+-        */
++    void genRange(const float* filter, int k)
++    {
+        for(int i = 0; i< queryNum; i++){
+-            // int L = filter[2 * i];
+-            // int R = filter[2 * i + 1];
+-            // qRange[i] = {L, R};
+             ans[i] = getTopK(i, filter, k);
+         }
+     }
+ 
+-    std::vector<std::pair<float,int> > getGt(int id){
++    std::vector<std::pair<float,int> > getGt(int id)
++    {
+         return ans[id];
+     }
+ private:
+-    float getDistance(int query_id, int base_id){
++    float getDistance(int query_id, int base_id)
++    {
+         float ans = 0;
+         for(int i = 0; i < dim; i++)
+             ans+=(query[query_id*dim + i] - data[base_id * dim +i]) * (query[query_id*dim + i] - data[base_id * dim +i]);
+         return ans;
+     }
+ 
+-    std::vector<std::pair<float,int> > getTopK(int query_id, const float* filter, int k){
+-        // std::cout << query_id << ' ' << L << ' ' << R << std::endl;
++    std::vector<std::pair<float,int> > getTopK(int query_id, const float* filter, int k)
++    {
+         std::vector<std::pair<float,int> > result;
+         for(int i = 0; i < baseNum; i++){
+-	    for (int j = 0; j < valueDim; j++){
+-                if(value[valueDim * i + j] >= filter[2 * valueDim * i + j] && value[valueDim * i + j] <= filter[2 * valueDim * i + j + 1]) {
+-                    // std::cout << i << std::endl;
+-                    result.push_back({getDistance(query_id,i),i});
+-	        }
+-	    }
++            for (int j = 0; j < valueDim; j++) {
++                int ans = 1;
++                if(value[valueDim * i + j] < filter[2 * valueDim * i +  2 * j] || value[valueDim * i + j] > filter[2 * valueDim * i + 2 * j + 1]) 
++                {
++                    ans = 0;
++                }
++            }
++        }
++        if (ans) {
++            result.push_back({getDistance(query_id,i),i});
+         }
+         sort(result.begin(), result.end());
+         result.resize(k);
+         return result;
+     }
+-
+-
+ };
+ 
+ 
+diff --git a/main.cpp b/main.cpp
+index 9bd6014..060c7dd 100755
+--- a/main.cpp
++++ b/main.cpp
+@@ -24,29 +24,11 @@ int stringTonum(char *ch){
+     return res;
+ }
+ 
+-inline
+-void read_fvecs(const std::string& filename, float* data, size_t num, size_t dim) {
+-    std::ifstream in(filename, std::ios::binary);
+-    if (!in) {
+-        std::cerr << "Failed to open file: " << filename << std::endl;
+-        std::exit(1);
+-    }
+-    for (size_t i = 0; i < num; ++i) {
+-        int d = 0;
+-        in.read(reinterpret_cast<char*>(&d), sizeof(int));
+-        if (d != static_cast<int>(dim)) {
+-            // std::cerr << "Dimension mismatch! expected: d" << d << "get: " << dim << "for: " << filename << std::endl;
+-            d = dim;
+-        }
+-        in.read(reinterpret_cast<char*>(data + i * dim), sizeof(float) * dim);
+-    }
+-}
+-
+ bool filter(idx_t id, float* value, float* filter, int vDim, int queryId) {
+     float* label = &value[vDim * id];
+ 
+     for (int j = 0; j < vDim; j++) {
+-        if (label[j] < filter[2 * vDim * queryId + j] || label[j] > filter[2 * vDim * queryId + j + 1])
++        if (label[j] < filter[2 * vDim * queryId + 2 * j] || label[j] > filter[2 * vDim * queryId + 2 * j + 1])
+             return false;
+     }
+ 
+@@ -93,25 +75,12 @@ int main(int argc, char** argv){
+         float time = 0;
+         for(int i = 0 ; i < queryNum; i++){
+             auto ans = dataMaker.getGt(i);
+-                
+-            // filter L, R
+-            float rangeL = filters[vDim * i], rangeR = filters[vDim * i + 1];
++            float rangeL = filters[2 * vDim * i], rangeR = filters[2 * vDim * i + 1];
+             auto start = std::chrono::high_resolution_clock::now();
+-	    // Modified
+-            // auto result = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, k, ef);
+             auto neighbors = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, new_k, ef);
+-	    std::vector<idx_t> result;
+-            // Modified post filter
+-	    /*
+-	    for (auto neighbor : neighbors) {
+-                if (filter(neighbor, dataMaker.value, filter, vDim, i)) {
+-                    res.push_back(neighbor);
+-                    if (result.size() >= k)
+-                    break;
+-                }
+-            }
+-	    */
+-	    while (!neighbors.empty()) {
++	        std::vector<idx_t> result;
++            
++            while (!neighbors.empty()) {
+                 idx_t neighbor = neighbors.top().second;
+                 neighbors.pop();
+ 
+@@ -125,11 +94,9 @@ int main(int argc, char** argv){
+             auto end = std::chrono::high_resolution_clock::now();
+             
+             std::vector<int>r1, r2;
+-            while(!result.empty()){
+-		// Modified
+-                // r1.push_back(result.top().second);
+-                // result.pop();
+-		r1 = std::vector<int>(result.begin(), result.end());
++            while (!result.empty())
++            {
++                r1 = std::vector<int>(result.begin(), result.end());
+             }
+             for(int j = 0; j < k; j++) r2.push_back(ans[j].second);
+             for(auto i1:r1)
+diff --git a/utils.hpp b/utils.hpp
+index ba05f4c..af857df 100644
+--- a/utils.hpp
++++ b/utils.hpp
+@@ -4,6 +4,24 @@
+ #include <iostream>
+ #include <fstream>
+ 
++inline
++void read_fvecs(const std::string& filename, float* data, size_t num, size_t dim) {
++    std::ifstream in(filename, std::ios::binary);
++    if (!in) {
++        std::cerr << "Failed to open file: " << filename << std::endl;
++        std::exit(1);
++    }
++    for (size_t i = 0; i < num; ++i) {
++        int d = 0;
++        in.read(reinterpret_cast<char*>(&d), sizeof(int));
++        if (d != static_cast<int>(dim)) {
++            // std::cerr << "Dimension mismatch! expected: d" << d << "get: " << dim << "for: " << filename << std::endl;
++            d = dim;
++        }
++        in.read(reinterpret_cast<char*>(data + i * dim), sizeof(float) * dim);
++    }
++}
++
+ void load_data(const char* filename, float*& data, int num, int dim) {
+     std::ifstream in(filename, std::ios::binary);
+     if (!in.is_open()) {
+
