@@ -76,22 +76,36 @@ int main(int argc, char** argv){
         for(int i = 0 ; i < queryNum; i++){
             auto ans = dataMaker.getGt(i);
             float rangeL = filters[2 * vDim * i], rangeR = filters[2 * vDim * i + 1];
-            auto start = std::chrono::high_resolution_clock::now();
+            auto query_start = std::chrono::high_resolution_clock::now();
             auto neighbors = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, new_k, ef);
+            auto query_end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed_query = query_end - query_start;
+            time += elapsed_query.count();
+
 	        std::vector<idx_t> result;
+            std::vector<std::pair<float, idx_t>> result_tmp;
             
             while (!neighbors.empty()) {
                 idx_t neighbor = neighbors.top().second;
+                float distance = neighbors.top().first;
                 neighbors.pop();
+                
+                result_tmp.push_back(std::make_pair(distance, neighbor));
+            }
 
-                if (filter(neighbor, dataMaker.value, filters, vDim, i)) {
-                    result.push_back(neighbor);
+            std::sort(result_tmp.begin(), result_tmp.end());
+
+            auto filter_start = std::chrono::high_resolution_clock::now();
+            for (auto p : result_tmp) {
+                if (filter(p.second, dataMaker.value, filters, vDim, i)) {
+                    result.push_back(p.second);
                     if (result.size() >= k)
                         break;
                 }
             }
-
-            auto end = std::chrono::high_resolution_clock::now();
+            auto filter_end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed_filter = filter_end - filter_start;
+            time += elapsed_filter.count();
             
             std::vector<int>r1, r2;
             for (auto r : result) {
@@ -102,8 +116,6 @@ int main(int argc, char** argv){
                 for(auto i2:r2)
                     if(i1 == i2)
                         recall+=1.0/k;
-            std::chrono::duration<double> elapsed = end - start;
-            time += elapsed.count();
         }
         std::cout<<"ef:"<<ef<<std::endl;
         std::cout<<"recall:"<<recall/queryNum<<std::endl;
