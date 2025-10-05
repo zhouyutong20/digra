@@ -60,8 +60,8 @@ int main(int argc, char** argv){
     puts("buildOK");
 
     // Add filter
-    float *filters = new float[queryNum * 2];
-    read_fvecs(filterFilename, filters, queryNum, 2);
+    float *filters = new float[queryNum * 2 * vDim];
+    read_fvecs(filterFilename, filters, queryNum, 2 * vDim);
     // std::vector<float> r = {0.01,0.05,0.1,0.2,0.4};
     // for(auto range:r){
     // Prepare for post filter
@@ -94,9 +94,8 @@ int main(int argc, char** argv){
             auto end = std::chrono::high_resolution_clock::now();
             
             std::vector<int>r1, r2;
-            while (!result.empty())
-            {
-                r1 = std::vector<int>(result.begin(), result.end());
+            for (auto r : result) {
+                r1.push_back(r);
             }
             for(int j = 0; j < k; j++) r2.push_back(ans[j].second);
             for(auto i1:r1)

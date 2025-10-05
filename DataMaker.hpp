@@ -70,16 +70,16 @@ private:
     {
         std::vector<std::pair<float,int> > result;
         for(int i = 0; i < baseNum; i++){
+            int ans = 1;
             for (int j = 0; j < valueDim; j++) {
-                int ans = 1;
-                if(value[valueDim * i + j] < filter[2 * valueDim * i +  2 * j] || value[valueDim * i + j] > filter[2 * valueDim * i + 2 * j + 1]) 
+                if(value[valueDim * i + j] < filter[2 * valueDim * query_id +  2 * j] || value[valueDim * i + j] > filter[2 * valueDim * query_id + 2 * j + 1]) 
                 {
                     ans = 0;
                 }
             }
-        }
-        if (ans) {
-            result.push_back({getDistance(query_id,i),i});
+            if (ans) {
+                result.push_back({getDistance(query_id,i),i});
+            }
         }
         sort(result.begin(), result.end());
         result.resize(k);
