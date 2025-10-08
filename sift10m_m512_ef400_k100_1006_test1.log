@@ -1,0 +1,36 @@
+read begin
+layer:0
+layer:1
+layer:2
+layer:3
+layer:4
+layer:5
+layer:6
+layer:7
+layer:8
+layer:9
+layer:10
+layer:11
+layer:12
+layer:13
+layer:14
+edge num:1631293127
+average edges:1631.29
+build time:19569.2
+buildOK
+ef:200
+recall:0.266104
+time:36.3802
+qps:274.875
+ef:300
+recall:0.399236
+time:49.9947
+qps:200.021
+ef:400
+recall:0.530144
+time:62.7674
+qps:159.318
+ef:500
+recall:0.660398
+time:75.0876
+qps:133.178

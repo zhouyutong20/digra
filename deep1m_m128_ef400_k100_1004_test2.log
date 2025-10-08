@@ -1,0 +1,3 @@
+nohup: ignoring input
+terminate called after throwing an instance of 'std::bad_array_new_length'
+  what():  std::bad_array_new_length

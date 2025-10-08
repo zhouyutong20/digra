@@ -1,0 +1,37 @@
+nohup: ignoring input
+read begin
+layer:0
+layer:1
+layer:2
+layer:3
+layer:4
+layer:5
+layer:6
+layer:7
+layer:8
+layer:9
+layer:10
+layer:11
+layer:12
+layer:13
+layer:14
+edge num:701202572
+average edges:701.203
+build time:38688.9
+buildOK
+ef:200
+recall:0.266094
+time:24.6245
+qps:406.1
+ef:300
+recall:0.399264
+time:33.85
+qps:295.421
+ef:400
+recall:0.530163
+time:43.0731
+qps:232.163
+ef:500
+recall:0.6604
+time:51.7665
+qps:193.175

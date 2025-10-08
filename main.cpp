@@ -65,7 +65,7 @@ int main(int argc, char** argv){
     // std::vector<float> r = {0.01,0.05,0.1,0.2,0.4};
     // for(auto range:r){
     // Prepare for post filter
-    int ratio = 4;     // sift 12, tiny 10
+    int ratio = 25;     // sift 12, tiny 10
     int new_k = ratio * k;
     dataMaker.genRange(filters, k);
     // std::cout<<"----------"<<range<<"--------"<<std::endl;

@@ -1,0 +1,36 @@
+nohup: ignoring input
+read begin
+layer:0
+layer:1
+layer:2
+layer:3
+layer:4
+layer:5
+layer:6
+layer:7
+layer:8
+layer:9
+layer:10
+layer:11
+layer:12
+layer:13
+edge num:201665907
+average edges:725.584
+build time:4148.78
+buildOK
+start rangeHnsw.queryRange: ef 200
+complete rangeHnsw.queryRange, start post filter...
+comlete post filter, result size: 0
+start rangeHnsw.queryRange: ef 200
+complete rangeHnsw.queryRange, start post filter...
+comlete post filter, result size: 0
+start rangeHnsw.queryRange: ef 200
+complete rangeHnsw.queryRange, start post filter...
+comlete post filter, result size: 0
+start rangeHnsw.queryRange: ef 200
+complete rangeHnsw.queryRange, start post filter...
+comlete post filter, result size: 0
+start rangeHnsw.queryRange: ef 200
+complete rangeHnsw.queryRange, start post filter...
+comlete post filter, result size: 0
+start rangeHnsw.queryRange: ef 200
