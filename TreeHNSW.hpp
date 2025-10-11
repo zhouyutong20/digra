@@ -75,7 +75,7 @@ public:
 
     }
 
-    std::priority_queue<std::pair<float, hnswlib::labeltype>> queryRange(float *vecData, int rangeL, int rangeR, int k,int ef_s){
+    std::priority_queue<std::pair<float, hnswlib::labeltype>> queryRange(float *vecData, int rangeL, int rangeR, int k,int ef_s, int dis_calculation){
         node* highNode = findHighNode(root,rangeL,rangeR);
 
         int belongL = highNode->keynum;
@@ -122,7 +122,7 @@ public:
             ep_ids.push_back(ep);
             searchLayer[ep] = highNode->layer;
         }
-        ResultHeap result = searchBaseLayer0(ep_ids,vecData,highNode->layer,rangeL,rangeR,ef_s,sp);
+        ResultHeap result = searchBaseLayer0(ep_ids,vecData,highNode->layer,rangeL,rangeR,ef_s,sp, dis_calculation);
 
         while(result.size() > k) result.pop();
 
@@ -951,7 +951,7 @@ private:
     }
 
     ResultHeap
-    searchBaseLayer0(std::vector<tableint> ep_ids, const void *data_point, int Layer, int rangeL, int rangeR, int ef, int splitPoint) {
+    searchBaseLayer0(std::vector<tableint> ep_ids, const void *data_point, int Layer, int rangeL, int rangeR, int ef, int splitPoint, int dis_calculation) {
         tag ++;
 
         ResultHeap top_candidates;
@@ -1067,6 +1067,7 @@ private:
                     tableint cid = candidate_id;
 
                     float dist1 = fstdistfunc_(data_point, currObj1, dist_func_param_);
+                    dis_calculation++;
                     if (top_candidates.size() < ef || lowerBound > dist1) {
                         candidateSet.emplace(-dist1, cid);
                         searchLayer[cid] = searchLayer[ep_ids[0]] == layer ? searchLayer[ep_ids[1]]: searchLayer[ep_ids[0]];

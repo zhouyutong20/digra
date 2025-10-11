@@ -73,11 +73,12 @@ int main(int argc, char** argv){
         float recall = 0;
 
         float time = 0;
+        int dis_calculation = 0;
         for(int i = 0 ; i < queryNum; i++){
             auto ans = dataMaker.getGt(i);
             float rangeL = filters[2 * vDim * i], rangeR = filters[2 * vDim * i + 1];
             auto query_start = std::chrono::high_resolution_clock::now();
-            auto neighbors = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, new_k, ef);
+            auto neighbors = rangeHnsw.queryRange(dataMaker.query + i * dim, rangeL, rangeR, new_k, ef, dis_calculation);
             auto query_end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> elapsed_query = query_end - query_start;
             time += elapsed_query.count();
@@ -121,6 +122,7 @@ int main(int argc, char** argv){
         std::cout<<"recall:"<<recall/queryNum<<std::endl;
         std::cout<<"time:"<<time<<std::endl;
         std::cout<<"qps:"<<queryNum/time<<std::endl;
+        std::cout<<"number of distance calculation:"<<dis_calculation<<std::endl;
        }
     // }
 
